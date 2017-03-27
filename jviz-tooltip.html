@@ -154,6 +154,20 @@ jviz_tooltip.properties.tooltipColor = { type: String, reflectToAttribute: true,
 jviz_tooltip.properties.tooltipX = { type: String, reflectToAttribute: true, observer: 'update_x' };
 jviz_tooltip.properties.tooltipY = { type: String, reflectToAttribute: true, observer: 'update_y' };
 jviz_tooltip.properties.tooltipHide = { type: String, reflectToAttribute: true };
+jviz_tooltip.properties.tooltipOver = { type: String, reflectToAttribute: true };
+
+//Ready method
+jviz_tooltip.ready = function()
+{
+  //Save this
+  var self = this;
+
+  //Mouse over event
+  jviz.dom.mouse_over(this.$.box, function(){ self.tooltipOver = true; });
+
+  //Mouse out event
+  jviz.dom.mouse_out(this.$.box, function(){ self.tooltipOver = false; });
+};
 
 //Update the tooltip size
 jviz_tooltip.update_size = function()
@@ -238,6 +252,9 @@ jviz_tooltip.set_position = function(position)
 
 //Get the actual position
 jviz_tooltip.get_position = function(){ return this.tooltipPosition; };
+
+//Check if mouse is over the element
+jviz_tooltip.is_over = function(){ return this.tooltipOver; };
 
 //Move the tooltip to a position
 jviz_tooltip.move = function(x, y)
