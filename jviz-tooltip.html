@@ -8,3 +8,114 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../jviz/jviz.html">
 <link rel="import" href="../jviz-styles/jviz-styles.html">
+
+<!-- Tooltip tempalte -->
+<dom-module id="jviz-tooltip">
+  <template>
+    <style>
+      /* Host variables */
+      :host
+      {
+        --jviz-tooltip-posx: 0px;
+        --jviz-tooltip-posy: 0px;
+
+        --jviz-tooltip-color-background: var(--jviz-blue);
+        --jviz-tooltip-color-text: var(--jviz-blue-over);
+
+        --jviz-tooltip-triangle-width: 6px;
+
+        --jviz-tooltip-box-padding: 6px;
+      }
+
+      /* Triangle style */
+      :host .triangle
+      {
+        display: none;
+        position: absolute;
+
+        border-right: var(--jviz-tooltip-triangle-width) solid transparent;
+        border-bottom: var(--jviz-tooltip-triangle-width) solid var(--jviz-tooltip-color-background);
+        border-left: var(--jviz-tooltip-triangle-width) solid transparent;
+      }
+
+      /* Triangle top */
+      :host[tooltip-position="top"] .triangle-top
+      {
+        display: block;
+        top: var(--jviz-tooltip-posx);
+        left: calc();
+      }
+      :host[tooltip-position="bottom"] .triangle-left{ display: block; }
+      :host[tooltip-position="left"] .triangle-left{ display: block; }
+      :host[tooltip-position="right"] .triangle-left{ display: block; }
+
+      /* Tooltip box */
+      :host .box
+      {
+        display: block;
+        background-color: var(--jviz-tooltip-color-background);
+        color: var(--jviz-tooltip-color-text);
+        padding: var(--jviz-tooltip-box-padding);
+        border-radius: 5px;
+        @apply(--jviz-font);
+        font-size: 12px;
+      }
+
+      /* Box links */
+      :host .box a
+      {
+        color: var(--jviz-tooltip-color-text);
+        text-decoration: underline;
+      }
+    </style>
+    <!-- Triangle positions -->
+    <div class="triangle triangle-top"></div>
+    <div class="triangle triangle-bottom"></div>
+    <div class="triangle triangle-left"></div>
+    <div class="triangle triangle-right"></div>
+    <!-- Content box -->
+    <div class="box"><content></content></div>
+  </template>
+</dom-module>
+
+<!-- Tooltip logic -->
+<script>
+
+//Tooltip object
+var jviz_tooltip = { is: 'jviz-tooltip' };
+
+//Tooltip properties
+jviz_tooltip.properties = {};
+jviz_tooltip.properties.tooltipPosition = { type: String, reflectToAttribute: true, observer: 'update_position' };
+jviz_tooltip.properties.tooltipColor = { type: String, reflectToAttribute: true, observer: 'update_color' };
+jviz_tooltip.properties.tooltipX = { type: String, reflectToAttribute: true, observer: 'update_x' };
+jviz_tooltip.properties.tooltipY = { type: String, reflectToAttribute: true, observer: 'update_y' };
+
+//Update the tooltip position x
+jviz_tooltip.update_x = function(value)
+{
+
+};
+
+//Update the tooltip position y
+jviz_tooltip.update_y = function(value)
+{
+
+};
+
+//Update the tooltip color
+jviz_tooltip.update_color = function(value)
+{
+
+};
+
+//Update the tooltip position
+jviz_tooltip.update_position = function(value)
+{
+
+};
+
+</script>
+
+<!-- Register the tooltip element -->
+<script> Polymer(jviz_tooltip); </script>
