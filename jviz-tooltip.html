@@ -29,12 +29,6 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
         --jviz-tooltip-box-padding: 6px;
       }
 
-      /* Host style */
-      :host
-      {
-        z-index: 2000;
-      }
-
       /* Tooltip hide */
       :host[tooltip-hide]{ display: none; }
 
@@ -43,6 +37,7 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       {
         display: none;
         position: absolute;
+        z-index: 2000;
       }
 
       /* Triangle top */
@@ -100,6 +95,7 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
         @apply(--jviz-font);
         font-size: 12px;
         position: absolute;
+        z-index: 2000;
       }
 
       /* Tooltip box top */
