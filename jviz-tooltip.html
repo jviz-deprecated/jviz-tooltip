@@ -18,6 +18,8 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       {
         --jviz-tooltip-posx: 0px;
         --jviz-tooltip-posy: 0px;
+        --jviz-tooltip-width: 0px;
+        --jviz-tooltip-height: 0px;
 
         --jviz-tooltip-color-background: var(--jviz-blue);
         --jviz-tooltip-color-text: var(--jviz-blue-over);
@@ -27,27 +29,59 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
         --jviz-tooltip-box-padding: 6px;
       }
 
+      /* Tooltip hide */
+      :host[tooltip-hide]{ display: none; }
+
       /* Triangle style */
       :host .triangle
       {
         display: none;
         position: absolute;
-
-        border-right: var(--jviz-tooltip-triangle-width) solid transparent;
-        border-bottom: var(--jviz-tooltip-triangle-width) solid var(--jviz-tooltip-color-background);
-        border-left: var(--jviz-tooltip-triangle-width) solid transparent;
       }
 
       /* Triangle top */
       :host[tooltip-position="top"] .triangle-top
       {
         display: block;
-        top: var(--jviz-tooltip-posx);
-        left: calc();
+        top: var(--jviz-tooltip-posy);
+        left: calc(var(--jviz-tooltip-posx) + var(--jviz-tooltip-width) / 2);
+        border-right: var(--jviz-tooltip-triangle-width) solid transparent;
+        border-bottom: var(--jviz-tooltip-triangle-width) solid var(--jviz-tooltip-color-background);
+        border-left: var(--jviz-tooltip-triangle-width) solid transparent;
       }
-      :host[tooltip-position="bottom"] .triangle-left{ display: block; }
-      :host[tooltip-position="left"] .triangle-left{ display: block; }
-      :host[tooltip-position="right"] .triangle-left{ display: block; }
+
+      /* Triangle bottom */
+      :host[tooltip-position="bottom"] .triangle-bottom
+      {
+        display: block;
+        top: calc(var(--jviz-tooltip-posy));
+        left: calc(var(--jviz-tooltip-posx) + var(--jviz-tooltip-width) / 2);
+        border-right: var(--jviz-tooltip-triangle-width) solid transparent;
+        border-top: var(--jviz-tooltip-triangle-width) solid var(--jviz-tooltip-color-background);
+        border-left: var(--jviz-tooltip-triangle-width) solid transparent;
+      }
+
+      /* Triangle left */
+      :host[tooltip-position="left"] .triangle-left
+      {
+        display: block;
+        top: calc(var(--jviz-tooltip-posy));
+        left: calc(var(--jviz-tooltip-posx));
+        border-left: var(--jviz-tooltip-triangle-width) solid var(--jviz-tooltip-color-background);
+        border-top: var(--jviz-tooltip-triangle-width) solid transparent;
+        border-bottom: var(--jviz-tooltip-triangle-width) solid transparent;
+      }
+
+      /* Triangle right */
+      :host[tooltip-position="right"] .triangle-left
+      {
+        display: block;
+        top: calc(var(--jviz-tooltip-posy));
+        left: calc(var(--jviz-tooltip-posx));
+        border-right: var(--jviz-tooltip-triangle-width) solid var(--jviz-tooltip-color-background);
+        border-top: var(--jviz-tooltip-triangle-width) solid transparent;
+        border-bottom: var(--jviz-tooltip-triangle-width) solid transparent;
+      }
 
       /* Tooltip box */
       :host .box
@@ -59,6 +93,35 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
         border-radius: 5px;
         @apply(--jviz-font);
         font-size: 12px;
+        position: absolute;
+      }
+
+      /* Tooltip box top */
+      :host[tooltip-position="top"] .box
+      {
+        top: calc(var(--jviz-tooltip-posy) + var(--jviz-tooltip-triangle-width));
+        left: var(--jviz-tooltip-posx);
+      }
+
+      /* Tooltip box bottom */
+      :host[tooltip-position="bottom"] .box
+      {
+        top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-triangle-width) * 2 - var(--jviz-tooltip-height));
+        left: var(--jviz-tooltip-posx);
+      }
+
+      /* Tooltip box left */
+      :host[tooltip-position="left"] .box
+      {
+        top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-height) / 2);
+        left: calc(var(--jviz-tooltip-posx) - var(--jviz-tooltip-width) - var(--jviz-tooltip-triangle-width) * 2);
+      }
+
+      /* Tooltip box right */
+      :host[tooltip-position="right"] .box
+      {
+        top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-height) / 2);
+        left: calc(var(--jviz-tooltip-posx) + var(--jviz-tooltip-triangle-width));
       }
 
       /* Box links */
@@ -74,7 +137,7 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
     <div class="triangle triangle-left"></div>
     <div class="triangle triangle-right"></div>
     <!-- Content box -->
-    <div class="box"><content></content></div>
+    <div id="box" class="box"><content></content></div>
   </template>
 </dom-module>
 
@@ -86,33 +149,104 @@ var jviz_tooltip = { is: 'jviz-tooltip' };
 
 //Tooltip properties
 jviz_tooltip.properties = {};
-jviz_tooltip.properties.tooltipPosition = { type: String, reflectToAttribute: true, observer: 'update_position' };
+jviz_tooltip.properties.tooltipPosition = { type: String, reflectToAttribute: true };
 jviz_tooltip.properties.tooltipColor = { type: String, reflectToAttribute: true, observer: 'update_color' };
 jviz_tooltip.properties.tooltipX = { type: String, reflectToAttribute: true, observer: 'update_x' };
 jviz_tooltip.properties.tooltipY = { type: String, reflectToAttribute: true, observer: 'update_y' };
+jviz_tooltip.properties.tooltipHide = { type: String, reflectToAttribute: true };
+
+//Update the tooltip size
+jviz_tooltip.update_size = function()
+{
+  //Update the tooltip width
+  this.customStyle['--jviz-tooltip-width'] = jviz.dom.width(this.$.box) + 'px';
+
+  //Update the tooltip height
+  this.customStyle['--jviz-tooltip-height'] = jviz.dom.height(this.$.box) + 'px';
+};
 
 //Update the tooltip position x
 jviz_tooltip.update_x = function(value)
 {
+  //Update the tooltip position x
+  this.customStyle['--jviz-tooltip-posx'] = value.replace('px', '').replace('%', '') + 'px';
 
+  //Update the tooltip size
+  this.update_size();
+
+  //Update the styles
+  this.updateStyles();
 };
 
 //Update the tooltip position y
 jviz_tooltip.update_y = function(value)
 {
+  //Update the tooltip position y
+  this.customStyle['--jviz-tooltip-posy'] = value.replace('px', '').replace('%', '') + 'px';
 
+  //Update the tooltip size
+  this.update_size();
+
+  //Update the styles
+  this.updateStyles();
 };
+
+//Set the tooltip content
+jviz_tooltip.set_content = function(value)
+{
+  //Update the tooltip content
+  jviz.dom.html(this.$.box, value);
+
+  //Update the tooltip size
+  this.update_size();
+
+  //Update the styles
+  this.updateStyles();
+};
+
+//Show the tooltip
+jviz_tooltip.show = function(){ this.tooltipHide = false; };
+
+//Hide the tooltip
+jviz_tooltip.hide = function(){ this.tooltipHide = true; };
 
 //Update the tooltip color
 jviz_tooltip.update_color = function(value)
 {
+  //Update the color variable
+  this.customStyle['--jviz-tooltip-color-background'] = 'var(--jviz-' + value + ')';
 
+  //Update the text color variable
+  this.customStyle['--jviz-tooltip-color-text'] = 'var(--jviz-' + value + '-over)';
+
+  //Update the styles
+  this.updateStyles();
 };
 
-//Update the tooltip position
-jviz_tooltip.update_position = function(value)
-{
+//Set the actual color
+jviz_tooltip.set_color = function(value){ this.tooltipColor = value; };
 
+//Get the actual color
+jviz_tooltip.get_color = function(){return this.tooltipColor; };
+
+//Set the position
+jviz_tooltip.set_position = function(position)
+{
+  //Set the position
+  this.tooltipPosition = position;
+};
+
+//Get the actual position
+jviz_tooltip.get_position = function(){ return this.tooltipPosition; };
+
+//Move the tooltip to a position
+jviz_tooltip.move = function(x, y)
+{
+  //Update the position x
+  if(typeof x !== 'undefined'){ this.tooltipX = x.toString(); }
+
+  //Update the position y
+  if(typeof y !== 'undefined'){ this.tooltipY = y.toString(); }
 };
 
 </script>
