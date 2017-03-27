@@ -8,4 +8,25 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
 <link rel="import" href="../jviz-tooltip.html">
 
 <!-- Tooltip demo -->
-<jviz-tooltip id="test">Tooltip content</jviz-tooltip>
+<jviz-tooltip id="test" tooltip-position="top">Tooltip content</jviz-tooltip>
+
+<!-- Tooltip test -->
+<script>
+
+//Tooltip element
+var el = null;
+
+//Document ready
+jviz.dom.ready(function()
+{
+  //Get the element
+  el = jviz.dom.id('test');
+
+  //Move the tooltip
+  el.move(200, 200);
+
+  //Add the tooltip content
+  el.set_content('This is the content<br>We have some lines');
+});
+
+</script>
