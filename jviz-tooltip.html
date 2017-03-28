@@ -44,10 +44,10 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       :host[tooltip-position="top"] .triangle-top
       {
         display: block;
-        top: var(--jviz-tooltip-posy);
+        top: calc(var(--jviz-tooltip-posy));
         left: calc(var(--jviz-tooltip-posx) + var(--jviz-tooltip-width) / 2);
         border-right: var(--jviz-tooltip-triangle-width) solid transparent;
-        border-bottom: var(--jviz-tooltip-triangle-width) solid var(--jviz-tooltip-color-background);
+        border-top: var(--jviz-tooltip-triangle-width) solid var(--jviz-tooltip-color-background);
         border-left: var(--jviz-tooltip-triangle-width) solid transparent;
       }
 
@@ -55,10 +55,10 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       :host[tooltip-position="bottom"] .triangle-bottom
       {
         display: block;
-        top: calc(var(--jviz-tooltip-posy));
+        top: var(--jviz-tooltip-posy);
         left: calc(var(--jviz-tooltip-posx) + var(--jviz-tooltip-width) / 2);
         border-right: var(--jviz-tooltip-triangle-width) solid transparent;
-        border-top: var(--jviz-tooltip-triangle-width) solid var(--jviz-tooltip-color-background);
+        border-bottom: var(--jviz-tooltip-triangle-width) solid var(--jviz-tooltip-color-background);
         border-left: var(--jviz-tooltip-triangle-width) solid transparent;
       }
 
@@ -101,14 +101,14 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       /* Tooltip box top */
       :host[tooltip-position="top"] .box
       {
-        top: calc(var(--jviz-tooltip-posy) + var(--jviz-tooltip-triangle-width));
+        top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-triangle-width) * 2 - var(--jviz-tooltip-height));
         left: var(--jviz-tooltip-posx);
       }
 
       /* Tooltip box bottom */
       :host[tooltip-position="bottom"] .box
       {
-        top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-triangle-width) * 2 - var(--jviz-tooltip-height));
+        top: calc(var(--jviz-tooltip-posy) + var(--jviz-tooltip-triangle-width));
         left: var(--jviz-tooltip-posx);
       }
 
