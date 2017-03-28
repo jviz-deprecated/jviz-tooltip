@@ -41,7 +41,7 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       }
 
       /* Triangle top */
-      :host[tooltip-position="top"] .triangle-top
+      :host[tooltip-position="top"] .triangle
       {
         display: block;
         top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-triangle-width));
@@ -52,7 +52,7 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       }
 
       /* Triangle bottom */
-      :host[tooltip-position="bottom"] .triangle-bottom
+      :host[tooltip-position="bottom"] .triangle
       {
         display: block;
         top: var(--jviz-tooltip-posy);
@@ -63,7 +63,7 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       }
 
       /* Triangle left */
-      :host[tooltip-position="left"] .triangle-left
+      :host[tooltip-position="left"] .triangle
       {
         display: block;
         top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-triangle-width));
@@ -74,7 +74,7 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       }
 
       /* Triangle right */
-      :host[tooltip-position="right"] .triangle-right
+      :host[tooltip-position="right"] .triangle
       {
         display: block;
         top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-triangle-width));
@@ -133,11 +133,8 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
         text-decoration: underline;
       }
     </style>
-    <!-- Triangle positions -->
-    <div class="triangle triangle-top"></div>
-    <div class="triangle triangle-bottom"></div>
-    <div class="triangle triangle-left"></div>
-    <div class="triangle triangle-right"></div>
+    <!-- Triangle -->
+    <div class="triangle"></div>
     <!-- Content box -->
     <div id="box" class="box"><content></content></div>
   </template>
