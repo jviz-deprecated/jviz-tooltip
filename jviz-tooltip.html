@@ -44,8 +44,8 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       :host[tooltip-position="top"] .triangle-top
       {
         display: block;
-        top: calc(var(--jviz-tooltip-posy));
-        left: calc(var(--jviz-tooltip-posx) + var(--jviz-tooltip-width) / 2);
+        top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-triangle-width));
+        left: calc(var(--jviz-tooltip-posx) - var(--jviz-tooltip-triangle-width));
         border-right: var(--jviz-tooltip-triangle-width) solid transparent;
         border-top: var(--jviz-tooltip-triangle-width) solid var(--jviz-tooltip-color-background);
         border-left: var(--jviz-tooltip-triangle-width) solid transparent;
@@ -101,8 +101,8 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       /* Tooltip box top */
       :host[tooltip-position="top"] .box
       {
-        top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-triangle-width) * 2 - var(--jviz-tooltip-height));
-        left: var(--jviz-tooltip-posx);
+        top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-triangle-width) - var(--jviz-tooltip-height) - var(--jviz-tooltip-box-padding) * 2);
+        left: calc(var(--jviz-tooltip-posx) - var(--jviz-tooltip-box-padding) - var(--jviz-tooltip-width) / 2);
       }
 
       /* Tooltip box bottom */
