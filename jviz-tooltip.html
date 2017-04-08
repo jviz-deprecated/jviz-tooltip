@@ -29,8 +29,8 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
         --jviz-tooltip-box-padding: 6px;
       }
 
-      /* Tooltip hide */
-      :host[tooltip-hide]{ display: none; }
+      /* Tooltip visible */
+      :host:not([visible]){ display: none; }
 
       /* Triangle style */
       :host .triangle
@@ -41,7 +41,7 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       }
 
       /* Triangle top */
-      :host[tooltip-position="top"] .triangle
+      :host[position="top"] .triangle
       {
         display: block;
         top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-triangle-width));
@@ -52,7 +52,7 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       }
 
       /* Triangle bottom */
-      :host[tooltip-position="bottom"] .triangle
+      :host[position="bottom"] .triangle
       {
         display: block;
         top: var(--jviz-tooltip-posy);
@@ -63,7 +63,7 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       }
 
       /* Triangle left */
-      :host[tooltip-position="left"] .triangle
+      :host[position="left"] .triangle
       {
         display: block;
         top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-triangle-width));
@@ -74,7 +74,7 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       }
 
       /* Triangle right */
-      :host[tooltip-position="right"] .triangle
+      :host[position="right"] .triangle
       {
         display: block;
         top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-triangle-width));
@@ -99,28 +99,28 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       }
 
       /* Tooltip box top */
-      :host[tooltip-position="top"] .box
+      :host[position="top"] .box
       {
         top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-triangle-width) - var(--jviz-tooltip-height) - var(--jviz-tooltip-box-padding) * 2);
         left: calc(var(--jviz-tooltip-posx) - var(--jviz-tooltip-box-padding) - var(--jviz-tooltip-width) / 2);
       }
 
       /* Tooltip box bottom */
-      :host[tooltip-position="bottom"] .box
+      :host[position="bottom"] .box
       {
         top: calc(var(--jviz-tooltip-posy) + var(--jviz-tooltip-triangle-width));
         left: calc(var(--jviz-tooltip-posx) - var(--jviz-tooltip-box-padding) - var(--jviz-tooltip-width) / 2);
       }
 
       /* Tooltip box left */
-      :host[tooltip-position="left"] .box
+      :host[position="left"] .box
       {
         top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-box-padding) - var(--jviz-tooltip-height) / 2);
         left: calc(var(--jviz-tooltip-posx) - var(--jviz-tooltip-triangle-width) - var(--jviz-tooltip-width) - var(--jviz-tooltip-box-padding) * 2);
       }
 
       /* Tooltip box right */
-      :host[tooltip-position="right"] .box
+      :host[position="right"] .box
       {
         top: calc(var(--jviz-tooltip-posy) - var(--jviz-tooltip-box-padding) - var(--jviz-tooltip-height) / 2);
         left: calc(var(--jviz-tooltip-posx) + var(--jviz-tooltip-triangle-width));
@@ -148,28 +148,28 @@ var jviz_tooltip = { is: 'jviz-tooltip' };
 
 //Tooltip properties
 jviz_tooltip.properties = {};
-jviz_tooltip.properties.tooltipPosition = { type: String, reflectToAttribute: true };
-jviz_tooltip.properties.tooltipColor = { type: String, reflectToAttribute: true, observer: 'update_color' };
-jviz_tooltip.properties.tooltipX = { type: String, reflectToAttribute: true, observer: 'update_x' };
-jviz_tooltip.properties.tooltipY = { type: String, reflectToAttribute: true, observer: 'update_y' };
-jviz_tooltip.properties.tooltipHide = { type: String, reflectToAttribute: true };
-jviz_tooltip.properties.tooltipOver = { type: String, reflectToAttribute: true };
+jviz_tooltip.properties.position = { type: String, reflectToAttribute: true };
+jviz_tooltip.properties.color = { type: String, reflectToAttribute: true, observer: '_update_color' };
+jviz_tooltip.properties.posx = { type: String, reflectToAttribute: true, observer: '_update_posx' };
+jviz_tooltip.properties.posy = { type: String, reflectToAttribute: true, observer: '_update_posy' };
+jviz_tooltip.properties.visible = { type: Boolean, reflectToAttribute: true, value: true };
+jviz_tooltip.properties.over = { type: String, reflectToAttribute: true, value: false };
 
-//Ready method
-jviz_tooltip.ready = function()
+//Attached method
+jviz_tooltip.attached = function()
 {
   //Save this
   var self = this;
 
   //Mouse over event
-  jviz.dom.mouse_over(this.$.box, function(){ self.tooltipOver = true; });
+  jviz.dom.mouse_over(this.$.box, function(){ self.over = true; });
 
   //Mouse out event
-  jviz.dom.mouse_out(this.$.box, function(){ self.tooltipOver = false; });
+  jviz.dom.mouse_out(this.$.box, function(){ self.over = false; });
 };
 
 //Update the tooltip size
-jviz_tooltip.update_size = function()
+jviz_tooltip._update_size = function()
 {
   //Update the tooltip width
   this.customStyle['--jviz-tooltip-width'] = jviz.dom.width(this.$.box) + 'px';
@@ -179,52 +179,52 @@ jviz_tooltip.update_size = function()
 };
 
 //Update the tooltip position x
-jviz_tooltip.update_x = function(value)
+jviz_tooltip._update_posx = function(value)
 {
   //Update the tooltip position x
   this.customStyle['--jviz-tooltip-posx'] = value.replace('px', '').replace('%', '') + 'px';
 
   //Update the tooltip size
-  this.update_size();
+  this._update_size();
 
   //Update the styles
   this.updateStyles();
 };
 
 //Update the tooltip position y
-jviz_tooltip.update_y = function(value)
+jviz_tooltip._update_posy = function(value)
 {
   //Update the tooltip position y
   this.customStyle['--jviz-tooltip-posy'] = value.replace('px', '').replace('%', '') + 'px';
 
   //Update the tooltip size
-  this.update_size();
+  this._update_size();
 
   //Update the styles
   this.updateStyles();
 };
 
 //Set the tooltip content
-jviz_tooltip.set_content = function(value)
+jviz_tooltip.content = function(value)
 {
   //Update the tooltip content
   jviz.dom.html(this.$.box, value);
 
   //Update the tooltip size
-  this.update_size();
+  this._update_size();
 
   //Update the styles
   this.updateStyles();
 };
 
 //Show the tooltip
-jviz_tooltip.show = function(){ this.tooltipHide = false; };
+jviz_tooltip.show = function(){ this.visible = true; };
 
 //Hide the tooltip
-jviz_tooltip.hide = function(){ this.tooltipHide = true; };
+jviz_tooltip.hide = function(){ this.visible = false; };
 
 //Update the tooltip color
-jviz_tooltip.update_color = function(value)
+jviz_tooltip._update_color = function(value)
 {
   //Update the color variable
   this.customStyle['--jviz-tooltip-color-background'] = 'var(--jviz-' + value + ')';
@@ -236,36 +236,20 @@ jviz_tooltip.update_color = function(value)
   this.updateStyles();
 };
 
-//Set the actual color
-jviz_tooltip.set_color = function(value){ this.tooltipColor = value; };
-
-//Get the actual color
-jviz_tooltip.get_color = function(){return this.tooltipColor; };
-
-//Set the position
-jviz_tooltip.set_position = function(position)
-{
-  //Set the position
-  this.tooltipPosition = position;
-};
-
-//Get the actual position
-jviz_tooltip.get_position = function(){ return this.tooltipPosition; };
-
 //Check if mouse is over the element
-jviz_tooltip.is_over = function(){ return this.tooltipOver; };
+jviz_tooltip.is_over = function(){ return this.over; };
 
 //Move the tooltip to a position
 jviz_tooltip.move = function(x, y)
 {
   //Update the position x
-  if(typeof x !== 'undefined'){ this.tooltipX = x.toString(); }
+  if(typeof x !== 'undefined'){ this.posx = x.toString(); }
 
   //Update the position y
-  if(typeof y !== 'undefined'){ this.tooltipY = y.toString(); }
+  if(typeof y !== 'undefined'){ this.posy = y.toString(); }
 };
 
-</script>
+//Register the tooltip element
+Polymer(jviz_tooltip);
 
-<!-- Register the tooltip element -->
-<script> Polymer(jviz_tooltip); </script>
+</script>
