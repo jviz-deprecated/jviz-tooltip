@@ -7,8 +7,10 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
 <!-- Import components -->
 <link rel="import" href="../jviz-tooltip.html">
 
+<div style="background-color:#000000;position:absolute;top:0px;left:0px;width:400px;height:200px"></div>
+
 <!-- Tooltip demo -->
-<jviz-tooltip id="test" tooltip-position="top">Tooltip content</jviz-tooltip>
+<jviz-tooltip id="test" position="right">Tooltip content</jviz-tooltip>
 
 <!-- Tooltip test -->
 <script>
@@ -26,7 +28,7 @@ jviz.dom.ready(function()
   el.move(200, 200);
 
   //Add the tooltip content
-  el.set_content('This is the content<br>We have some lines');
+  el.content('This is the content<br>We have some lines');
 });
 
 </script>
