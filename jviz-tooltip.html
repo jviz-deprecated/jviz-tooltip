@@ -142,114 +142,112 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
 
 <!-- Tooltip logic -->
 <script>
+  //Tooltip object
+  var jviz_tooltip = { is: 'jviz-tooltip' };
 
-//Tooltip object
-var jviz_tooltip = { is: 'jviz-tooltip' };
+  //Tooltip properties
+  jviz_tooltip.properties = {};
+  jviz_tooltip.properties.position = { type: String, reflectToAttribute: true };
+  jviz_tooltip.properties.color = { type: String, reflectToAttribute: true, observer: '_update_color' };
+  jviz_tooltip.properties.posx = { type: String, reflectToAttribute: true, observer: '_update_posx' };
+  jviz_tooltip.properties.posy = { type: String, reflectToAttribute: true, observer: '_update_posy' };
+  jviz_tooltip.properties.visible = { type: Boolean, reflectToAttribute: true, value: false };
+  jviz_tooltip.properties.over = { type: String, reflectToAttribute: true, value: false };
 
-//Tooltip properties
-jviz_tooltip.properties = {};
-jviz_tooltip.properties.position = { type: String, reflectToAttribute: true };
-jviz_tooltip.properties.color = { type: String, reflectToAttribute: true, observer: '_update_color' };
-jviz_tooltip.properties.posx = { type: String, reflectToAttribute: true, observer: '_update_posx' };
-jviz_tooltip.properties.posy = { type: String, reflectToAttribute: true, observer: '_update_posy' };
-jviz_tooltip.properties.visible = { type: Boolean, reflectToAttribute: true, value: false };
-jviz_tooltip.properties.over = { type: String, reflectToAttribute: true, value: false };
+  //Attached method
+  jviz_tooltip.attached = function()
+  {
+    //Save this
+    var self = this;
 
-//Attached method
-jviz_tooltip.attached = function()
-{
-  //Save this
-  var self = this;
+    //Mouse over event
+    jviz.dom.mouse_over(this.$.box, function(){ self.over = true; });
 
-  //Mouse over event
-  jviz.dom.mouse_over(this.$.box, function(){ self.over = true; });
+    //Mouse out event
+    jviz.dom.mouse_out(this.$.box, function(){ self.over = false; });
+  };
 
-  //Mouse out event
-  jviz.dom.mouse_out(this.$.box, function(){ self.over = false; });
-};
+  //Update the tooltip size
+  jviz_tooltip._update_size = function()
+  {
+    //Update the tooltip width
+    this.customStyle['--jviz-tooltip-width'] = jviz.dom.width(this.$.box) + 'px';
 
-//Update the tooltip size
-jviz_tooltip._update_size = function()
-{
-  //Update the tooltip width
-  this.customStyle['--jviz-tooltip-width'] = jviz.dom.width(this.$.box) + 'px';
+    //Update the tooltip height
+    this.customStyle['--jviz-tooltip-height'] = jviz.dom.height(this.$.box) + 'px';
+  };
 
-  //Update the tooltip height
-  this.customStyle['--jviz-tooltip-height'] = jviz.dom.height(this.$.box) + 'px';
-};
-
-//Update the tooltip position x
-jviz_tooltip._update_posx = function(value)
-{
   //Update the tooltip position x
-  this.customStyle['--jviz-tooltip-posx'] = value.replace('px', '').replace('%', '') + 'px';
+  jviz_tooltip._update_posx = function(value)
+  {
+    //Update the tooltip position x
+    this.customStyle['--jviz-tooltip-posx'] = value.replace('px', '').replace('%', '') + 'px';
 
-  //Update the tooltip size
-  this._update_size();
+    //Update the tooltip size
+    this._update_size();
 
-  //Update the styles
-  this.updateStyles();
-};
+    //Update the styles
+    this.updateStyles();
+  };
 
-//Update the tooltip position y
-jviz_tooltip._update_posy = function(value)
-{
   //Update the tooltip position y
-  this.customStyle['--jviz-tooltip-posy'] = value.replace('px', '').replace('%', '') + 'px';
+  jviz_tooltip._update_posy = function(value)
+  {
+    //Update the tooltip position y
+    this.customStyle['--jviz-tooltip-posy'] = value.replace('px', '').replace('%', '') + 'px';
 
-  //Update the tooltip size
-  this._update_size();
+    //Update the tooltip size
+    this._update_size();
 
-  //Update the styles
-  this.updateStyles();
-};
+    //Update the styles
+    this.updateStyles();
+  };
 
-//Set the tooltip content
-jviz_tooltip.content = function(value)
-{
-  //Update the tooltip content
-  jviz.dom.html(this.$.box, value);
+  //Set the tooltip content
+  jviz_tooltip.content = function(value)
+  {
+    //Update the tooltip content
+    jviz.dom.html(this.$.box, value);
 
-  //Update the tooltip size
-  this._update_size();
+    //Update the tooltip size
+    this._update_size();
 
-  //Update the styles
-  this.updateStyles();
-};
+    //Update the styles
+    this.updateStyles();
+  };
 
-//Show the tooltip
-jviz_tooltip.show = function(){ this.visible = true; };
+  //Show the tooltip
+  jviz_tooltip.show = function(){ this.visible = true; };
 
-//Hide the tooltip
-jviz_tooltip.hide = function(){ this.visible = false; };
+  //Hide the tooltip
+  jviz_tooltip.hide = function(){ this.visible = false; };
 
-//Update the tooltip color
-jviz_tooltip._update_color = function(value)
-{
-  //Update the color variable
-  this.customStyle['--jviz-tooltip-color-background'] = 'var(--jviz-' + value + ')';
+  //Update the tooltip color
+  jviz_tooltip._update_color = function(value)
+  {
+    //Update the color variable
+    this.customStyle['--jviz-tooltip-color-background'] = 'var(--jviz-' + value + ')';
 
-  //Update the text color variable
-  this.customStyle['--jviz-tooltip-color-text'] = 'var(--jviz-' + value + '-over)';
+    //Update the text color variable
+    this.customStyle['--jviz-tooltip-color-text'] = 'var(--jviz-' + value + '-over)';
 
-  //Update the styles
-  this.updateStyles();
-};
+    //Update the styles
+    this.updateStyles();
+  };
 
-//Check if mouse is over the element
-jviz_tooltip.is_over = function(){ return this.over; };
+  //Check if mouse is over the element
+  jviz_tooltip.is_over = function(){ return this.over; };
 
-//Move the tooltip to a position
-jviz_tooltip.move = function(x, y)
-{
-  //Update the position x
-  if(typeof x !== 'undefined'){ this.posx = x.toString(); }
+  //Move the tooltip to a position
+  jviz_tooltip.move = function(x, y)
+  {
+    //Update the position x
+    if(typeof x !== 'undefined'){ this.posx = x.toString(); }
 
-  //Update the position y
-  if(typeof y !== 'undefined'){ this.posy = y.toString(); }
-};
+    //Update the position y
+    if(typeof y !== 'undefined'){ this.posy = y.toString(); }
+  };
 
-//Register the tooltip element
-Polymer(jviz_tooltip);
-
+  //Register the tooltip element
+  Polymer(jviz_tooltip);
 </script>
